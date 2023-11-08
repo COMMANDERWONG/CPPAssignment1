@@ -34,8 +34,8 @@ FlexArray::~FlexArray()
 
 FlexArray::FlexArray(const FlexArray &other)
 {
-	capacity = other.capacity;
-	size = other.size;
+	capacity = other.getCapacity();
+	size = other.getSize();
 	arr_ = new int[capacity];
 	arr_check = new int[capacity];
 
@@ -103,7 +103,8 @@ string FlexArray::print() const
 
 string FlexArray::printAll() const
 {
-	string result = "[";
+	string result;
+	result += '[';
 
 	for (int i = 0; i < capacity; i++)
 	{
@@ -123,7 +124,7 @@ string FlexArray::printAll() const
 		}
 	}
 
-	result += "]";
+	result += ']';
 	return result;
 }
 
@@ -250,7 +251,6 @@ bool FlexArray::insert(int i, int v)
 		return true;
 	}
 
-	size++;
 	for (int j = 0; j < capacity; j++)
 	{
 
@@ -259,38 +259,49 @@ bool FlexArray::insert(int i, int v)
 			tempIndex++;
 			if (tempIndex == i || i == 0)
 			{
+				size++;
+
 				if (i == 0 && arr_check[0] != 1)
 				{
 					arr_[j - 1] = v;
 					arr_check[j - 1] = 1;
 					return true;
 				}
+				else if (i == (size - 1) && arr_check[capacity - 1] != 1)
+				{
+					arr_[j + 1] = v;
+					arr_check[j + 1] = 1;
+
+					return true;
+				}
+
 				else if (i >= (size - i) && arr_check[capacity - 1] != 1 || arr_check[0] == 1)
 				{
-
-					for (int k = capacity - 1; k > j; k--)
+					for (int k = capacity - 1; k >= j; k--)
 					{
 						arr_[k + 1] = arr_[k];
 						arr_check[k + 1] = arr_check[k];
 					}
 
-					if (i == 0)
+					// if (i == 0)
+					// {
+					// 	int temp = arr_[0];
+					// 	arr_[1] = temp;
+					// 	arr_[0] = v;
+
+					// 	return true;
+					// }
+					// else
 					{
-						int temp = arr_[0];
-						arr_[1] = temp;
-						arr_[0] = v;
-						return true;
-					}
-					else
-					{
-						arr_[j + 1] = v;
-						arr_check[j + 1] = 1;
+						arr_[j] = v;
+						arr_check[j] = 1;
 						return true;
 					}
 				}
 				else if (i < (size - i) && arr_check[0] != 1 || arr_check[capacity - 1] == 1)
 				{
-					for (int k = 1; k <= j; k++)
+
+					for (int k = 0; k <= j; k++)
 					{
 						arr_[k - 1] = arr_[k];
 						arr_check[k - 1] = arr_check[k];
@@ -325,11 +336,6 @@ void FlexArray::resizeAndRecenter()
 	int newCapacity = LO_THRESHOLD * size;
 	int *newArr = new int[newCapacity];
 	int *newCheckArr = new int[newCapacity];
-	for (int i = 0; i < newCapacity; i++)
-	{
-		newCheckArr[i] = 0;
-	}
-
 	int start = (newCapacity - size) / 2;
 	for (int i = 0; i < capacity; i++)
 	{
