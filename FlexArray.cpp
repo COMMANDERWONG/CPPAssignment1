@@ -153,10 +153,9 @@ int FlexArray::get(int i) const
 
 bool FlexArray::set(int i, int v)
 {
-	if (i >= 0 && i <= size)
+	if (i >=0 && i < size)
 	{
 		arr_[(capacity - size) / 2 + i] = v;
-		arr_check[(capacity - size) / 2 + i] = 1;
 		return true;
 	}
 	return false;
@@ -246,7 +245,8 @@ bool FlexArray::insert(int i, int v)
 	}
 	else if (size == 0)
 	{
-		set(size, v);
+		arr_[(capacity - size) / 2 + i] = v;
+		arr_check[(capacity - size) / 2 + i] = 1;
 		size++;
 		return true;
 	}
@@ -285,7 +285,7 @@ bool FlexArray::insert(int i, int v)
 					else
 					{
 						arr_[j + 1] = v;
-						cout << "success" << endl;
+						arr_check[j+1] = 1;
 						return true;
 					}
 				}
