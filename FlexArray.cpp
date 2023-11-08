@@ -30,8 +30,6 @@ FlexArray::FlexArray(const int *arr, int size)
 
 FlexArray::~FlexArray()
 {
-	delete[] arr_;
-	delete[] arr_check;
 }
 
 FlexArray::FlexArray(const FlexArray &other)
@@ -246,9 +244,9 @@ bool FlexArray::insert(int i, int v)
 	}
 	else if (size == 0)
 	{
+		size++;
 		arr_[(capacity - size) / 2 + i] = v;
 		arr_check[(capacity - size) / 2 + i] = 1;
-		size++;
 		return true;
 	}
 
@@ -333,8 +331,7 @@ void FlexArray::resizeAndRecenter()
 	}
 
 	int start = (newCapacity - size) / 2;
-
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < capacity; i++)
 	{
 		if (arr_check[i] == 1)
 		{

@@ -389,14 +389,15 @@ void FlexArrayTester::testo() {
 	if (a.getSize() != 5)
 		errorOut_("a size wrong: ", a.getSize(), 1);
 	string s = a.printAll();
+	cout << "hi" ;
 	if (s != "[X, 10, 20, 80, 99, 90]")
 		errorOut_("a printall wrong: ", s, 1);
-
 	// no space in head
 	FlexArray b{arr,2};
 	b.insert(0,80);
 	b.insert(0,90); // [90 80 10 20 X X]
 	b.insert(1,99);
+	cout << "hi";
 	if (b.get(1) != 99)
 		errorOut_("b get1 wrong: ", b.get(1), 2);
 	if (b.getSize() != 5)
