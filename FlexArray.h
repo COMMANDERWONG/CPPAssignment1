@@ -99,7 +99,7 @@ public:
 private:
 
 	int* arr_; // pointer to internal array
-	int* arr_check; // pointer to check if an index contains element
+	int* arr_check;
 	int capacity; // Capacity of the internal array
     int size; // Number of elements
 

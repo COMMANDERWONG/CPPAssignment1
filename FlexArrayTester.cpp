@@ -391,6 +391,7 @@ void FlexArrayTester::testo() {
 	string s = a.printAll();
 	if (s != "[X, 10, 20, 80, 99, 90]")
 		errorOut_("a printall wrong: ", s, 1);
+
 	// no space in head
 	FlexArray b{arr,2};
 	b.insert(0,80);

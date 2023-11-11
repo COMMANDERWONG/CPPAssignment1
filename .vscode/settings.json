@@ -1,11 +1,9 @@
 {
     "files.associations": {
+        "new": "cpp",
         "array": "cpp",
         "string_view": "cpp",
         "initializer_list": "cpp",
-        "iostream": "cpp",
-        "xstring": "cpp"
-    },
-    "makefile.makePath": "C:\\msys64\\mingw32.exe ",
-    "makefile.makefilePath": "makefile"
+        "utility": "cpp"
+    }
 }
