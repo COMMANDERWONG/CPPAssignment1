@@ -6,7 +6,7 @@ using namespace std;
 FlexArray::FlexArray()
 {
 	size_ = 0;
-	capacity_ = INITIALCAP; // Initial capacity_
+	capacity_ = INITIALCAP; 
 	arr_ = new int[capacity_];
 	arrCheck_ = new int[capacity_];
 }
