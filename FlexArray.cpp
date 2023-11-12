@@ -1,6 +1,5 @@
 #include "FlexArray.h"
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 
@@ -37,11 +36,10 @@ FlexArray::~FlexArray()
 
 FlexArray::FlexArray(const FlexArray &other)
 {
-	capacity = other.getCapacity();
-	size = other.getSize();
+	capacity = other.capacity;
+	size = other.size;
 	arr_ = new int[capacity];
 	arr_check = new int[capacity];
-
 	for (int i = 0; i < capacity; i++)
 	{
 		arr_[i] = other.arr_[i];
@@ -56,26 +54,18 @@ FlexArray &FlexArray::operator=(const FlexArray &other)
 		return *this;
 	}
 
-	// Allocate new memory
-	int *newArr = new int[other.getCapacity()];
-	int *newCheckArr = new int[other.getCapacity()];
-
-	// Copy data
-	for (int i = 0; i < other.capacity; i++)
-	{
-		newArr[i] = other.arr_[i];
-		newCheckArr[i] = other.arr_check[i];
-	}
-
-	// Deallocate old memory
-	delete[] arr_;
-	delete[] arr_check;
-
-	// Update pointers and sizes
-	arr_ = newArr;
-	arr_check = newCheckArr;
 	capacity = other.capacity;
 	size = other.size;
+	int *newArr = new int[capacity];
+	int *newArrCheck = new int[capacity];
+
+	for (int i = 0; i < capacity; i++)
+	{
+		newArr[i] = other.arr_[i];
+		newArrCheck[i] = other.arr_check[i];
+	}
+	arr_ = newArr;
+	arr_check = newArrCheck;
 	return *this;
 }
 
@@ -114,8 +104,7 @@ string FlexArray::print() const
 
 string FlexArray::printAll() const
 {
-	string result;
-	result += "[";
+	string result = "[";
 
 	for (int i = 0; i < capacity; i++)
 	{
@@ -175,10 +164,11 @@ bool FlexArray::set(int i, int v)
 void FlexArray::push_back(int v)
 {
 
-	if (arr_check[capacity - 1] == 1 || capacity > HI_THRESHOLD * size && size != 0)
+	if (arr_check[capacity - 1] == 1)
 	{
 		resizeAndRecenter();
 	}
+
 	if (size == 0)
 	{
 		if (capacity % 2 == 0)
@@ -191,7 +181,6 @@ void FlexArray::push_back(int v)
 			arr_[capacity / 2 + size] = v;
 			arr_check[capacity / 2 + size] = 1;
 		}
-		
 	}
 	else
 	{
@@ -210,6 +199,10 @@ void FlexArray::push_back(int v)
 		}
 	}
 	size++;
+	if (capacity > HI_THRESHOLD * size && size != 0)
+	{
+		resizeAndRecenter();
+	}
 }
 
 bool FlexArray::pop_back()
@@ -220,7 +213,6 @@ bool FlexArray::pop_back()
 	}
 	else
 	{
-
 		for (int i = 0; i < capacity; i++)
 		{
 			if (arr_check[i] != 1)
@@ -229,8 +221,17 @@ bool FlexArray::pop_back()
 			}
 			else
 			{
-				arr_[i + size] = 0;
-				arr_check[i + size] = 0;
+				if (size == 0)
+				{
+					arr_[i] = 0;
+					arr_check[i] = 0;
+				}
+				else
+				{
+					arr_[i + size - 1] = 0;
+					arr_check[i + size - 1] = 0;
+				}
+
 				break;
 			}
 		}
@@ -245,10 +246,11 @@ bool FlexArray::pop_back()
 
 void FlexArray::push_front(int v)
 {
-	if (arr_check[0] == 1 || capacity > HI_THRESHOLD * size && size != 0)
+	if (arr_check[0] == 1)
 	{
 		resizeAndRecenter();
 	}
+
 	if (size == 0)
 	{
 		if (capacity % 2 == 0)
@@ -279,6 +281,10 @@ void FlexArray::push_front(int v)
 		}
 	}
 	size++;
+	if (capacity > HI_THRESHOLD * size && size != 0)
+	{
+		resizeAndRecenter();
+	}
 }
 
 bool FlexArray::pop_front()
@@ -298,13 +304,14 @@ bool FlexArray::pop_front()
 			}
 			else
 			{
+
 				arr_[i] = 0;
 				arr_check[i] = 0;
+
 				break;
 			}
 		}
 		size--;
-
 		if (capacity > HI_THRESHOLD * size && size != 0)
 		{
 			resizeAndRecenter();
@@ -354,14 +361,12 @@ bool FlexArray::insert(int i, int v)
 
 			arr_[j - 1] = v;
 			arr_check[j - 1] = 1;
-			size++;
 			break;
 		}
 		else if (i == size && arr_check[capacity - 1] != 1)
 		{
 			arr_[j + i] = v;
 			arr_check[j + i] = 1;
-			size++;
 			break;
 		}
 		else if (i >= (size - i) && arr_check[capacity - 1] != 1 || arr_check[0] == 1 && arr_check[capacity - 1] != 1)
@@ -371,22 +376,21 @@ bool FlexArray::insert(int i, int v)
 				arr_[k + 1] = arr_[k];
 				arr_check[k + 1] = arr_check[k];
 			}
-			size++;
 			arr_[j + i] = v;
 			break;
 		}
 		else if (i < (size - i) && arr_check[0] != 1 || arr_check[capacity - 1] == 1 && arr_check[0] != 1)
 		{
-			for (int k = 1; k <= j + i; k++)
+			for (int k = 1; k < j + i; k++)
 			{
 				arr_[k - 1] = arr_[k];
 				arr_check[k - 1] = arr_check[k];
 			}
-			size++;
 			arr_[j + i - 1] = v;
 			break;
 		}
 	}
+	size++;
 	return true;
 }
 
@@ -405,16 +409,20 @@ bool FlexArray::erase(int i)
 		}
 		if (i == 0)
 		{
+			arr_[j] = 0;
 			arr_check[j] = 0;
 			break;
 		}
 		else if (i == size - 1)
 		{
+			arr_[j + i] = 0;
 			arr_check[j + i] = 0;
 			break;
 		}
 		else if (i < (size - i) - 1)
 		{
+			arr_[0] = 0;
+			arr_check[0] = 0;
 			for (int k = (j + i) - 1; k >= 0; k--)
 			{
 				arr_[k + 1] = arr_[k];
@@ -424,7 +432,9 @@ bool FlexArray::erase(int i)
 		}
 		else if (i >= (size - i) - 1)
 		{
-			for (int k = (j + i) + 1; k <= capacity; k++)
+			arr_[capacity - 1] = 0;
+			arr_check[capacity - 1] = 0;
+			for (int k = (j + i) + 1; k < capacity; k++)
 			{
 				arr_[k - 1] = arr_[k];
 				arr_check[k - 1] = arr_check[k];
@@ -457,6 +467,8 @@ void FlexArray::resizeAndRecenter()
 			temp++;
 		}
 	}
+	delete[] arr_;
+	delete[] arr_check;
 	arr_ = newArr;
 	arr_check = newCheckArr;
 	capacity = newCapacity;
