@@ -98,10 +98,10 @@ public:
 
 private:
 
-	int* arr_; // pointer to internal array
-	int* arr_check;
-	int capacity; // Capacity of the internal array
-    int size; // Number of elements
+	int* arr_; // Pointer to internal array
+	int* arrCheck_; // Pointer to parallel array, used to check if an elemnt is valid.
+	int capacity_; // Capacity of the internal array
+    int size_; // Number of elements in internal array
 
     // Private function to resize and recenter the internal array
     void resizeAndRecenter();
